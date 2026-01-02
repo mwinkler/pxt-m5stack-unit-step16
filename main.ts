@@ -188,50 +188,50 @@ namespace m5step {
     }
 
     /**
-     * Set RGB LED on/off state
+     * Set LED on/off state
      * @param on true to turn on, false to turn off
      */
-    //% blockId=m5step_set_rgb_state
-    //% block="turn RGB $on"
+    //% blockId=m5step_set_led_state
+    //% block="turn LED $on"
     //% on.shadow="toggleOnOff" on.defl=true
-    //% group="RGB"
+    //% group="LED"
     //% weight=70
     //% blockGap=8
-    export function setRgbState(on: boolean): void {
+    export function setLedState(on: boolean): void {
         writeReg(RGB_CONFIG_REG, on ? RGB_CONFIG_ON : RGB_CONFIG_OFF);
     }
 
     /**
-     * Set RGB LED brightness
-     * @param brightness RGB brightness (0-100)
+     * Set LED brightness
+     * @param brightness LED brightness (0-100)
      */
-    //% blockId=m5step_set_rgb_brightness
-    //% block="set RGB brightness $brightness"
+    //% blockId=m5step_set_led_brightness
+    //% block="set LED brightness $brightness"
     //% brightness.min=0 brightness.max=100 brightness.defl=50
-    //% group="RGB"
+    //% group="LED"
     //% weight=65
     //% blockGap=8
-    export function setRgbBrightness(brightness: number): void {
+    export function setLedBrightness(brightness: number): void {
         if (brightness > 100) brightness = 100;
         if (brightness < 0) brightness = 0;
         writeReg(RGB_BRIGHTNESS_REG, brightness);
     }
 
     /**
-     * Set RGB LED color
+     * Set LED color
      * @param red Red value (0-255)
      * @param green Green value (0-255)
      * @param blue Blue value (0-255)
      */
-    //% blockId=m5step_set_rgb
-    //% block="set RGB red $red green $green blue $blue"
+    //% blockId=m5step_set_led
+    //% block="set LED red $red green $green blue $blue"
     //% red.min=0 red.max=255 red.defl=255
     //% green.min=0 green.max=255 green.defl=0
     //% blue.min=0 blue.max=255 blue.defl=0
-    //% group="RGB"
+    //% group="LED"
     //% weight=60
     //% blockGap=8
-    export function setRgb(red: number, green: number, blue: number): void {
+    export function setLed(red: number, green: number, blue: number): void {
         let data = pins.createBuffer(3);
         data[0] = red & 0xFF;
         data[1] = green & 0xFF;
@@ -240,20 +240,20 @@ namespace m5step {
     }
 
     /**
-     * Set RGB LED color using a color value
-     * @param color RGB color value (0x000000 to 0xFFFFFF)
+     * Set LED color using a color value
+     * @param color LED color value (0x000000 to 0xFFFFFF)
      */
-    //% blockId=m5step_set_rgb_color
-    //% block="set RGB color $color"
+    //% blockId=m5step_set_led_color
+    //% block="set LED color $color"
     //% color.shadow="colorNumberPicker"
-    //% group="RGB"
+    //% group="LED"
     //% weight=58
     //% blockGap=8
-    export function setRgbColor(color: number): void {
+    export function setLedColor(color: number): void {
         let r = (color >> 16) & 0xFF;
         let g = (color >> 8) & 0xFF;
         let b = color & 0xFF;
-        setRgb(r, g, b);
+        setLed(r, g, b);
     }
 
     /**
@@ -272,23 +272,23 @@ namespace m5step {
     }
 
     /**
-     * Save RGB configuration to flash memory
+     * Save LED configuration to flash memory
      * Takes about 50ms to complete
      */
-    //% blockId=m5step_save_rgb_config
-    //% block="save RGB config to flash"
+    //% blockId=m5step_save_led_config
+    //% block="save LED config to flash"
     //% group="Configuration"
     //% weight=33
     //% blockGap=8
     //% advanced=true
-    export function saveRgbConfig(): void {
+    export function saveLedConfig(): void {
         writeReg(SAVE_FLASH_REG, SAVE_RGB_CONFIG);
         basic.pause(50);
     }
 
     /**
      * Reset all settings to default values
-     * 7 segment=0xFE, 7 segment brightness=50, Switch=clockwise, RGB=on, RGB brightness=50, RGB color=black
+     * 7 segment=0xFE, 7 segment brightness=50, Switch=clockwise, LED=on, LED brightness=50, LED color=black
      */
     //% blockId=m5step_set_default_config
     //% block="reset to default settings"
@@ -300,11 +300,11 @@ namespace m5step {
         set7SegmentConfig(LED_CONFIG_DEFAULT);
         set7SegmentBrightness(50);
         setDirection(true);
-        setRgbState(true);
-        setRgbBrightness(50);
-        setRgb(0, 0, 0);
+        setLedState(true);
+        setLedBrightness(50);
+        setLed(0, 0, 0);
         save7SegmentConfig();
-        saveRgbConfig();
+        saveLedConfig();
     }
 
     /**
