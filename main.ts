@@ -101,86 +101,62 @@ namespace m5step {
 
     /**
      * Controls the operating status of the indicator light, allowing it to be set to always on, always off, or turn off after a specified time.
-     * @param config LED configuration (0=off, 1-254=timeout in seconds, 255=always on)
+     * @param config 7 segment configuration (0=off, 1-254=timeout in seconds, 255=always on)
      */
-    //% blockId=m5step_set_led_config
-    //% block="set LED config $config"
+    //% blockId=m5step_set_7segment_config
+    //% block="set 7 segment config $config"
     //% config.min=0 config.max=255 config.defl=254
-    //% group="LED"
+    //% group="7 Segment Display"
     //% weight=90
     //% blockGap=8
     //% advanced=true
-    export function setLedConfig(config: number): void {
+    export function set7SegmentConfig(config: number): void {
         writeReg(LED_CONFIG_REG, config);
     }
 
     /**
-     * Get current LED configuration
-     * @return LED configuration value
+     * Get current 7 segment configuration
+     * @return 7 segment configuration value
      */
-    //% blockId=m5step_get_led_config
-    //% block="LED config"
-    //% group="LED"
+    //% blockId=m5step_get_7segment_config
+    //% block="7 segment config"
+    //% group="7 Segment Display"
     //% weight=88
     //% blockGap=8
     //% advanced=true
-    export function getLedConfig(): number {
+    export function get7SegmentConfig(): number {
         let buf = readBytes(LED_CONFIG_REG, 1);
         return buf[0];
     }
 
     /**
-     * Set LED brightness
-     * @param brightness LED brightness (0-100)
+     * Set 7 segment brightness
+     * @param brightness 7 segment brightness (0-100)
      */
-    //% blockId=m5step_set_led_brightness
-    //% block="set LED brightness $brightness"
+    //% blockId=m5step_set_7segment_brightness
+    //% block="set 7 segment brightness $brightness"
     //% brightness.min=0 brightness.max=100 brightness.defl=50
-    //% group="LED"
+    //% group="7 Segment Display"
     //% weight=85
     //% blockGap=8
-    export function setLedBrightness(brightness: number): void {
+    export function set7SegmentBrightness(brightness: number): void {
         if (brightness > 100) brightness = 100;
         if (brightness < 0) brightness = 0;
         writeReg(LED_BRIGHTNESS_REG, brightness);
     }
 
     /**
-     * Get current LED brightness
-     * @return LED brightness (0-100)
+     * Turn 7 segment on/off
+     * @param on true to turn on, false to turn off
      */
-    //% blockId=m5step_get_led_brightness
-    //% block="LED brightness"
-    //% group="LED"
-    //% weight=83
-    //% blockGap=8
-    export function getLedBrightness(): number {
-        let buf = readBytes(LED_BRIGHTNESS_REG, 1);
-        return buf[0];
-    }
-
-    /**
-     * Turn LED on (always on)
-     */
-    //% blockId=m5step_led_on
-    //% block="turn LED on"
-    //% group="LED"
+    //% blockId=m5step_set_7segment_state
+    //% block="turn 7 segment $on"
+    //% on.shadow="toggleOnOff" on.defl=true
+    //% group="7 Segment Display"
     //% weight=80
     //% blockGap=8
-    export function ledOn(): void {
-        setLedConfig(LED_CONFIG_ON);
-    }
-
-    /**
-     * Turn LED off
-     */
-    //% blockId=m5step_led_off
-    //% block="turn LED off"
-    //% group="LED"
-    //% weight=78
-    //% blockGap=8
-    export function ledOff(): void {
-        setLedConfig(LED_CONFIG_OFF);
+    export function set7SegmentState(on: boolean): void {
+        set7SegmentConfig(on ? LED_CONFIG_ON : LED_CONFIG_OFF);
     }
 
     /**
@@ -226,20 +202,6 @@ namespace m5step {
     }
 
     /**
-     * Get RGB LED on/off state
-     * @return true if on, false if off
-     */
-    //% blockId=m5step_get_rgb_state
-    //% block="RGB on"
-    //% group="RGB"
-    //% weight=68
-    //% blockGap=8
-    export function getRgbState(): boolean {
-        let buf = readBytes(RGB_CONFIG_REG, 1);
-        return buf[0] == RGB_CONFIG_ON;
-    }
-
-    /**
      * Set RGB LED brightness
      * @param brightness RGB brightness (0-100)
      */
@@ -253,20 +215,6 @@ namespace m5step {
         if (brightness > 100) brightness = 100;
         if (brightness < 0) brightness = 0;
         writeReg(RGB_BRIGHTNESS_REG, brightness);
-    }
-
-    /**
-     * Get current RGB brightness
-     * @return RGB brightness (0-100)
-     */
-    //% blockId=m5step_get_rgb_brightness
-    //% block="RGB brightness"
-    //% group="RGB"
-    //% weight=63
-    //% blockGap=8
-    export function getRgbBrightness(): number {
-        let buf = readBytes(RGB_BRIGHTNESS_REG, 1);
-        return buf[0];
     }
 
     /**
@@ -309,28 +257,16 @@ namespace m5step {
     }
 
     /**
-     * Turn off RGB LED
-     */
-    //% blockId=m5step_rgb_off
-    //% block="turn RGB off"
-    //% group="RGB"
-    //% weight=55
-    //% blockGap=8
-    export function rgbOff(): void {
-        setRgb(0, 0, 0);
-    }
-
-    /**
-     * Save LED configuration to flash memory
+     * Save 7 segment configuration to flash memory
      * Takes about 50ms to complete
      */
-    //% blockId=m5step_save_led_config
-    //% block="save LED config to flash"
+    //% blockId=m5step_save_7segment_config
+    //% block="save 7 segment config to flash"
     //% group="Configuration"
     //% weight=35
     //% blockGap=8
     //% advanced=true
-    export function saveLedConfig(): void {
+    export function save7SegmentConfig(): void {
         writeReg(SAVE_FLASH_REG, SAVE_LED_CONFIG);
         basic.pause(50);
     }
@@ -352,7 +288,7 @@ namespace m5step {
 
     /**
      * Reset all settings to default values
-     * LED=0xFE, LED brightness=50, Switch=clockwise, RGB=on, RGB brightness=50, RGB color=black
+     * 7 segment=0xFE, 7 segment brightness=50, Switch=clockwise, RGB=on, RGB brightness=50, RGB color=black
      */
     //% blockId=m5step_set_default_config
     //% block="reset to default settings"
@@ -361,13 +297,13 @@ namespace m5step {
     //% blockGap=8
     //% advanced=true
     export function setDefaultConfig(): void {
-        setLedConfig(LED_CONFIG_DEFAULT);
-        setLedBrightness(50);
+        set7SegmentConfig(LED_CONFIG_DEFAULT);
+        set7SegmentBrightness(50);
         setDirection(true);
         setRgbState(true);
         setRgbBrightness(50);
         setRgb(0, 0, 0);
-        saveLedConfig();
+        save7SegmentConfig();
         saveRgbConfig();
     }
 
