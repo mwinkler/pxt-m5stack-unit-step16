@@ -1,0 +1,14 @@
+{
+    "name": "m5stack-unit-step16",
+    "version": "1.0.0",
+    "description": "M5Stack Step16 Unit",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts"
+    ],
+    "public": true
+}
